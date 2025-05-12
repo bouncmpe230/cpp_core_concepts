@@ -14,8 +14,6 @@ This tutorial introduces the fundamentals of C++ programming, structured into sh
 - [Encapsulation (Private Members)](#encapsulation)
 - [Inheritance](#inheritance)
 - [Polymorphism](#polymorphism)
-- [Function Overloading](#function-overloading)
-- [Templates](#templates)
 
 
 

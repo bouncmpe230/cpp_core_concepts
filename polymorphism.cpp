@@ -27,11 +27,18 @@ void render(Shape* s) {
 }
 
 int main() {
+    Shape* s;
     Circle c;
-    Square s;
+    Square q;
+
+    s = &c;
+    s->draw();
+
+    s = &q;
+    s->draw();
 
     render(&c);  // Output: Drawing a circle
-    render(&s);  // Output: Drawing a square
+    render(&q);  // Output: Drawing a square
 
     return 0;
 }
