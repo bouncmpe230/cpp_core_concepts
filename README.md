@@ -5,21 +5,21 @@ This tutorial introduces the fundamentals of C++ programming, structured into sh
 
 ## Table of Contents
 
-1. [Basic Input and Output](#1-basic-input-and-output)
-2. [Namespaces](#2-namespaces)
-3. [Variables and Data Types](#3-variables-and-data-types)
-4. [Structs and Member Functions](#4-structs-and-member-functions)
-5. [References and Reference Parameters](#5-references-and-reference-parameters)
-6. [Function Overloading](#6-function-overloading)
-7. [Encapsulation (Private Members)](#7-encapsulation-private-members)
-8. [Inheritance](#8-inheritance)
-9. [Polymorphism](#9-polymorphism)
-10. [Constructors and Destructors](#10-constructors-and-destructors)
-11. [Templates](#11-templates)
+- [Basic Input and Output](#basic-input-and-output)
+- [Namespaces](#namespaces)
+- [Variables and Data Types](#variables-and-data-types)
+- [Structs and Member Functions](#structs-and-member-functions)
+- [References and Reference Parameters](#references-and-reference-parameters)
+- [Constructors and Destructors](#constructors-and-destructors)
+- [Encapsulation (Private Members)](#encapsulation)
+- [Inheritance](#inheritance)
+- [Polymorphism](#polymorphism)
+- [Function Overloading](#function-overloading)
+- [Templates](#templates)
 
 
 
-## 1. Basic Input and Output
+## Basic Input and Output
 
 
 Input/output operations are essential for interacting with users. C++ provides `cin` for input and `cout` for output using the standard I/O stream library `<iostream>`.
@@ -51,7 +51,7 @@ g++ basic_io.cpp -o basic_io
 ./basic_io
 ```
 
-## 2. Namespaces
+## Namespaces
 
 Namespaces prevent naming conflicts in larger programs by grouping functions, variables, and types under a named scope.
 
@@ -81,7 +81,7 @@ int main() {
 ```
 
 
-## 3. Variables and Data Types
+## Variables and Data Types
 
 C++ supports several built-in data types: integers (`int`), floating point (`float`, `double`), characters (`char`), booleans (`bool`), and strings (`string`). Variables are containers that hold these values.
 
@@ -105,7 +105,7 @@ int main() {
 }
 ```
 
-## 4. Structs and Member Functions
+## Structs and Member Functions
 
 A `struct` in C++ is a user-defined type that groups related variables (called members). Structs can also include member functions.
 
@@ -137,7 +137,7 @@ int main() {
 ```
 
 
-## 5. References and Reference Parameters
+## References and Reference Parameters
 
 A reference is an alias for another variable. Functions can use reference parameters to modify arguments directly.
 
@@ -158,33 +158,38 @@ int main() {
 }
 ```
 
-## 6. Function Overloading
 
-C++ allows defining multiple functions with the same name but different parameter types or counts. This is called function overloading.
+## Constructors and Destructors
+
+Special functions that manage an object's lifecycle.
+A constructor is a special function automatically called when an object is created. A destructor is called when the object goes out of scope or is deleted.
 
 
 ```cpp
 #include <iostream>
 using namespace std;
 
-int sum(int a, int b) {
-  return a + b;
-}
+class Timer {
+public:
+  Timer() {
+    cout << "Timer started!" << endl;
+  }
 
-double sum(double a, double b) {
-  return a + b;
-}
+  ~Timer() {
+    cout << "Timer stopped." << endl;
+  }
+};
 
 int main() {
-  cout << sum(3, 4) << endl;        // uses int version
-  cout << sum(3.1, 4.2) << endl;    // uses double version
+  Timer t;
+  cout << "Running process..." << endl;
   return 0;
 }
 ```
 
-## 7. Encapsulation (Private Members)
+## Encapsulation
 
-Encapsulation is the practice of restricting direct access to some components of an object. In C++, this is done using access specifiers: `private`, `protected`, and `public`. Typically, data members are made private and accessed via public getter/setter functions.
+Encapsulation is the practice of restricting direct access to some components of an object.  It means hiding internal data and exposing only necessary interfaces. This ensures data protection, modularity, and easier maintenance. In C++, this is done using access specifiers: `private`, `protected`, and `public`. Typically, data members are made private and accessed via public getter/setter functions.
 
 ```cpp
 #include <iostream>
@@ -218,9 +223,11 @@ int main() {
 }
 ```
 
-## 8. Inheritance
+`balance` is private. Users interact with `deposit()` and `getBalance()` — no direct access.
 
-Inheritance allows one class to inherit properties and methods from another class. It promotes code reuse and establishes a parent-child relationship between classes.
+## Inheritance
+
+Inheritance allows one class to inherit properties and methods from another class. It promotes code reuse and logical hierarchies.
 
 ```cpp
 #include <iostream>
@@ -248,9 +255,18 @@ int main() {
 }
 ```
 
-## 9. Polymorphism
+`Dog` inherits `eat()` from `Animal`. No need to rewrite shared functionality.
 
-Polymorphism allows objects of different classes to be treated as objects of a common base class. This enables the use of virtual functions and dynamic behavior at runtime.
+## Polymorphism
+
+Polymorphism means "many forms". It allows the same interface to behave differently based on the actual object.
+
+### Runtime Polymorphism 
+Runtime polymorphism means the decision of which function to call is made at runtime, not compile time. In C++, this is achieved through:
+
+- Inheritance (base and derived classes)
+- Virtual functions: a member function that is declared in a base class and is meant to be overridden in derived classes
+- Pointers or references to base class
 
 
 ```cpp
@@ -259,71 +275,75 @@ using namespace std;
 
 class Shape {
 public:
-  virtual void draw() {
-    cout << "Drawing shape" << endl;
-  }
+    virtual void draw() {
+        cout << "Drawing a generic shape\n";
+    }
 };
 
 class Circle : public Shape {
 public:
-  void draw() override {
-    cout << "Drawing circle" << endl;
-  }
+    void draw() override {
+        cout << "Drawing a circle\n";
+    }
 };
 
 class Square : public Shape {
 public:
-  void draw() override {
-    cout << "Drawing square" << endl;
-  }
+    void draw() override {
+        cout << "Drawing a square\n";
+    }
 };
 
+void render(Shape* s) {
+    s->draw();  // Decided at runtime
+}
+
 int main() {
-  Shape* s;
+    Circle c;
+    Square s;
 
-  Circle c;
-  Square q;
+    render(&c);  // Output: Drawing a circle
+    render(&s);  // Output: Drawing a square
 
-  s = &c;
-  s->draw();  // calls Circle's draw
-
-  s = &q;
-  s->draw();  // calls Square's draw
-
-  return 0;
+    return 0;
 }
 ```
 
-## 10. Constructors and Destructors
 
-A constructor is a special function automatically called when an object is created. A destructor is called when the object goes out of scope or is deleted.
+###  Compile-time Polymorphism
+Compile-time polymorphism means the compiler determines which function to call based on the types and number of arguments at compile time — not at runtime. This includes:
+
+- Function overloading
+- Operator overloading
+- Templates
+
+####  Function Overloading
+
+C++ allows defining multiple functions with the same name but different parameter types or counts. This is called function overloading.
 
 
 ```cpp
 #include <iostream>
 using namespace std;
 
-class Timer {
-public:
-  Timer() {
-    cout << "Timer started!" << endl;
-  }
+int sum(int a, int b) {
+  return a + b;
+}
 
-  ~Timer() {
-    cout << "Timer stopped." << endl;
-  }
-};
+double sum(double a, double b) {
+  return a + b;
+}
 
 int main() {
-  Timer t;
-  cout << "Running process..." << endl;
+  cout << sum(3, 4) << endl;        // uses int version
+  cout << sum(3.1, 4.2) << endl;    // uses double version
   return 0;
 }
 ```
 
-## 11. Templates
+#### Templates
 
-Templates allow you to write generic and reusable code. A function template works with any data type.
+Templates allow writing generic functions and classes that work with any type, and the compiler generates the actual code for each type when needed.
 
 ```cpp
 #include <iostream>

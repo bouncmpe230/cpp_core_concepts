@@ -3,35 +3,35 @@ using namespace std;
 
 class Shape {
 public:
-  virtual void draw() {
-    cout << "Drawing shape" << endl;
-  }
+    virtual void draw() {
+        cout << "Drawing a generic shape\n";
+    }
 };
 
 class Circle : public Shape {
 public:
-  void draw() override {
-    cout << "Drawing circle" << endl;
-  }
+    void draw() override {
+        cout << "Drawing a circle\n";
+    }
 };
 
 class Square : public Shape {
 public:
-  void draw() override {
-    cout << "Drawing square" << endl;
-  }
+    void draw() override {
+        cout << "Drawing a square\n";
+    }
 };
 
+void render(Shape* s) {
+    s->draw();  // Decided at runtime
+}
+
 int main() {
-  Shape* s;
-  Circle c;
-  Square q;
+    Circle c;
+    Square s;
 
-  s = &c;
-  s->draw();
+    render(&c);  // Output: Drawing a circle
+    render(&s);  // Output: Drawing a square
 
-  s = &q;
-  s->draw();
-
-  return 0;
+    return 0;
 }
