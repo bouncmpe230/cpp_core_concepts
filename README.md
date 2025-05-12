@@ -6,8 +6,8 @@ This tutorial introduces the fundamentals of C++ programming, structured into sh
 ## Table of Contents
 
 - [Basic Input and Output](#basic-input-and-output)
+-  [Variables and Data Types](#variables-and-data-types)
 - [Namespaces](#namespaces)
-- [Variables and Data Types](#variables-and-data-types)
 - [Structs and Member Functions](#structs-and-member-functions)
 - [References and Reference Parameters](#references-and-reference-parameters)
 - [Constructors and Destructors](#constructors-and-destructors)
@@ -49,6 +49,30 @@ g++ basic_io.cpp -o basic_io
 ./basic_io
 ```
 
+## Variables and Data Types
+
+C++ supports several built-in data types: integers (`int`), floating point (`float`, `double`), characters (`char`), booleans (`bool`), and strings (`string`). Variables are containers that hold these values.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+  int apples = 10;
+  double price_per_apple = 0.75;
+  char grade = 'A';
+  bool available = true;
+  string message = "Total cost";
+
+  double total = apples * price_per_apple;
+
+  cout << message << ": $" << total << endl;
+  cout << "Grade: " << grade << ", Available: " << available << endl;
+  return 0;
+}
+```
+
 ## Namespaces
 
 Namespaces prevent naming conflicts in larger programs by grouping functions, variables, and types under a named scope.
@@ -78,30 +102,6 @@ int main() {
 }
 ```
 
-
-## Variables and Data Types
-
-C++ supports several built-in data types: integers (`int`), floating point (`float`, `double`), characters (`char`), booleans (`bool`), and strings (`string`). Variables are containers that hold these values.
-
-```cpp
-#include <iostream>
-#include <string>
-using namespace std;
-
-int main() {
-  int apples = 10;
-  double price_per_apple = 0.75;
-  char grade = 'A';
-  bool available = true;
-  string message = "Total cost";
-
-  double total = apples * price_per_apple;
-
-  cout << message << ": $" << total << endl;
-  cout << "Grade: " << grade << ", Available: " << available << endl;
-  return 0;
-}
-```
 
 ## Structs and Member Functions
 
