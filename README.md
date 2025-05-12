@@ -1,4 +1,4 @@
-# 📘 C++ Core Concepts
+# C++ Core Concepts
 
 This tutorial introduces the fundamentals of C++ programming, structured into short lessons. Each concept includes a detailed explanation, an example.
 
@@ -17,7 +17,7 @@ This tutorial introduces the fundamentals of C++ programming, structured into sh
 10. [Constructors and Destructors](#10-constructors-and-destructors)
 11. [Templates](#11-templates)
 
----
+
 
 ## 1. Basic Input and Output
 
