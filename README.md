@@ -14,6 +14,7 @@ This tutorial introduces the fundamentals of C++ programming, structured into sh
 - [Encapsulation (Private Members)](#encapsulation)
 - [Inheritance](#inheritance)
 - [Polymorphism](#polymorphism)
+- [Constructors and Destructors in Polymorphism](#constructorsAndPolymorphism)
 
 
 
@@ -360,3 +361,126 @@ int main() {
 }
 ```
 
+## Constructors and Destructors in Polymorphism
+
+When using polymorphism, constructors and destructors play a crucial role in managing resources and ensuring proper cleanup. In derived classes, constructors can explicitly call a specific constructor of the base class using an initializer list (e.g., `Base(3, 2)`). If no base constructor is specified, the compiler automatically inserts a call to the base class’s default constructor. This ensures the base portion of the object is properly initialized before the derived constructor runs.
+
+Destructors, on the other hand, are automatically called in the reverse order of construction: the derived class’s destructor runs first, followed by the base class’s destructor. However, this only happens fully if the object is destroyed with its actual (most-derived) type. If a derived object is deleted through a base class pointer and the base class does not have a `virtual` destructor, then only the base class’s destructor will be executed. This can lead to memory leaks and undefined behavior, which is why it is recommended for polymorphic base classes to declare destructors as `virtual`.
+
+In the following example, we demonstrate how constructors and destructors work in a polymorphic context with inheritance. In this snippet, we have a memory leak due to `stackArr[0]` storing a pointer to an `Apartment`, but deleting it as a `Building*`. This will only call the `Building` destructor, not the `Apartment` destructor, leading to a memory leak.
+
+All stack-allocated objects will call both their destructors when their scope ends, but heap-allocated objects will only call the base destructor if deleted through a base pointer. One can differentiate between the two by their declaration: stack-allocated objects are declared as `Building hamlinHall;`, while heap-allocated objects are created with `new`, like `Building* b = new Apartment();`.
+
+```cpp
+Building b;     // creates an object on the stack, calls the constructor
+
+Building* all;  // does not call the constructor, just declares a pointer
+
+#include <iostream>
+using namespace std;
+
+class Building {
+protected:
+    int floors;
+    string address;
+public:
+    Building() {
+        floors = 0;
+        address = "Unknown";
+        cout << "Unspecified building created\n";
+    }
+
+    Building(int f, string addr) : floors(f), address(addr) {
+        cout << "Building constructed at " << address << " with " << floors << " floors.\n";
+    }
+
+    void setAddress(string addr) {
+        address = addr;
+        cout << "Address set from Building class\n";
+    }
+
+    ~Building() {
+        cout << "Building at " << address << " is being destroyed.\n";
+    }
+};
+
+class Apartment : public Building {
+protected:
+    int units;
+    int inhabitants;
+public:
+    Apartment() {
+        units = 0;
+        inhabitants = 0;
+        cout << "Unspecified apartment created\n";
+    }
+
+    Apartment(int u, int inh) {
+        units = u;
+        inhabitants = inh;
+        cout << "Apartment constructed at " << address << " with " << floors
+             << " floors, " << units << " units and " << inhabitants << " inhabitants.\n";
+    }
+
+    Apartment(int f, string addr, int u, int inh) : Building(f, addr), units(u), inhabitants(inh) {
+        cout << "Apartment constructed at " << address << " with " << floors
+             << " floors, " << units << " units and " << inhabitants << " inhabitants.\n";
+    }
+
+    void setAddress(string addr) {
+        address = addr;
+        cout << "Address set from Apartment class\n";
+    }
+
+    ~Apartment() {
+        cout << "Apartment at " << address << " is being destroyed.\n";
+    }
+};
+
+void func(Building* (*bl)[2]) {
+    Building *b = new Apartment();
+
+    (*bl)[0] = new Apartment(3, "Main St", 8, 30);
+    (*bl)[1] = new Building(2, "Second St");
+    b = (*bl)[0];  // this line does not affect the output
+    return;
+}
+
+int main() {
+    Apartment hamlinHall;
+    Building* stackArr[2];
+
+    func(&stackArr); // this function call will create objects on the heap
+    hamlinHall.setAddress("Hamlin Hall, 123 Main St");
+    delete stackArr[0]; // delete the Apartment object
+    delete stackArr[1]; // delete the Building object
+    return 0;
+}
+```
+### Output
+```cpp
+Unspecified building created   // hamlinHall's base constructor (Apartment inherits Building)
+
+Unspecified apartment created  // hamlinHall's default Apartment constructor
+
+Unspecified building created   // base constructor for *b = new Apartment()
+
+Unspecified apartment created  // Apartment constructor for `b` 
+
+Building constructed at Main St with 3 floors.   // (*bl)[0]'s base constructor
+
+Apartment constructed at Main St with 3 floors, 8 units and 30 inhabitants.  // (*bl)[0] Apartment part
+
+Building constructed at Second St with 2 floors.  // (*bl)[1] is a pure Building
+
+Address set from Apartment class  // calling hamlinHall.setAddress()
+
+Building at Main St is being destroyed.  // only base destructor is called due to delete via Building* this causes a memory leak since stackArr is declared as Building* it only calls the base destructor
+
+Building at Second St is being destroyed.  // Building object fully destroyed
+
+Apartment at Hamlin Hall, 123 Main St is being destroyed.  // stack-allocated: Apartment destructor called
+
+Building at Hamlin Hall, 123 Main St is being destroyed. // stack-allocated: base (building) destructor called
+```
+---
